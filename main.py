@@ -4,8 +4,8 @@ import wx.adv
 import webbrowser
 from lolMatches import getMatches
 
-TRAY_TOOLTIP = 'System Tray Demo'
-TRAY_ICON = 'icon.png'
+TRAY_TOOLTIP = 'LolMatches'
+TRAY_ICON = 'icon.png'  # not very good pratice`
 
 def create_menu_item(menu, label, func):
     item = wx.MenuItem(menu, -1, label)
@@ -18,7 +18,6 @@ class LolMatchesPanel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
         self.SetBackgroundColour("blue")
-        #first column
         self.sources_list = wx.ListCtrl(self,style=wx.LC_REPORT | wx.BORDER_SUNKEN)
         self.sources_list1 = wx.ListCtrl(self,style=wx.LC_REPORT | wx.BORDER_SUNKEN)
         self.sources_list.InsertColumn(0, "Matches", width=350)
@@ -27,7 +26,6 @@ class LolMatchesPanel(wx.Panel):
         sizer.Add(self.sources_list, 0, wx.ALL | wx.EXPAND)
         sizer.Add(self.sources_list1, 1, wx.ALL | wx.EXPAND)
 
-        # sizer.Add(self.news_list, 1, wx.ALL | wx.EXPAND)
         self.SetSizer(sizer)
         self.todayMatches()
         self.sources_list.Bind(wx.EVT_LIST_ITEM_SELECTED , self.OnLinkSelected)
@@ -54,6 +52,7 @@ class LolMatchesPanel(wx.Panel):
 
     def OnLinkSelected(self, event):
           webbrowser.open('https://lolesports.com/live/')
+
 
 
 class TaskBarIcon(wx.adv.TaskBarIcon):
@@ -86,22 +85,20 @@ class TaskBarIcon(wx.adv.TaskBarIcon):
         frame.Show()
 
 class My_Application(wx.Frame):
-
-    #----------------------------------------------------------------------
     def __init__(self):
         wx.Frame.__init__(self, None, wx.ID_ANY, "", size=(1,1))
         panel = wx.Panel(self)
         self.myapp = TaskBarIcon(self)
         self.Bind(wx.EVT_CLOSE, self.onClose)
-
-    #----------------------------------------------------------------------
+        self.set_icon(TRAY_ICON)
     def onClose(self, evt):
-        """
-        Destroy the taskbar icon and the frame
-        """
         self.myapp.RemoveIcon()
         self.myapp.Destroy()
         self.Destroy()
+
+    def set_icon(self, path):
+        icon = wx.Icon(wx.Bitmap(path))
+        self.SetIcon(icon)
 
 if __name__ == "__main__":
     MyApp = wx.App()
